@@ -1,24 +1,21 @@
 # !/bin/bash
-wazuh_ip
-error_sudo="Please run the installer as sudo"
-error_username="\nPlease add the username that will identify your machine: sudo ./install-agent -i <IP> <USER>"
+wazuh_ip=$4
+error_sudo="Please run the installer with sudo"
+error_username="\nPlease add the username that will identify your machine: sudo ./install-agent -u <USER> -i <IP> "
 user_name=$1
 
 if [ ! -z "$SUDO_USER" ]; then
-# Install sipcalc package to be easier to check th IP
-sudo apt update
-sudo apt install sipcalc curl -y
-    if [ "$#" -eq  "0" ]; then
-        echo ${error_username}
-    else
-        if [ "$2" = "-i" ]; then
-            if [ "$(sipcalc $3 | grep ERR)" != "" ] || [ "$3" = "" ]; then
+    if [ "$1"  = "-u" ]; then
+        if [ "$3" = "-i" ]; then
+            if [ "$(sipcalc $4 | grep ERR)" != "" ]; then
                 echo "Provided IP is not valid"
                 exit 1
             else
-                $wazuh_ip="$3"
-                echo "Overwriting the default IP with: $wazuh_ip"
-                echo "Installing Wazuh Agent with costum IP"
+                # Install sipcalc package to be easier to check th IP
+                sudo apt update
+                sudo apt install sipcalc curl -y
+
+                echo "Installing Wazuh Agent on IP: $4"
                 curl -so wazuh-agent-4.3.8.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.3.8-1_amd64.deb && sudo WAZUH_MANAGER="$wazuh_ip" WAZUH_AGENT_NAME="$user_name" WAZUH_REGISTRATION_PASSWORD='password' dpkg -i ./wazuh-agent-4.3.8.deb ; rm wazuh-agent-4.3.8.deb
 
                 sudo systemctl daemon-reload
@@ -27,9 +24,10 @@ sudo apt install sipcalc curl -y
                 exit 1
             fi
         fi
-    echo "Some data was not provided"
-    exit 1
-fi
+        echo "Some data was not provided, please check for -i <IP> & -u <USERNAME>"
+    else
+        echo ${error_username}
+    fi
 else
     echo ${error_sudo}
 fi
