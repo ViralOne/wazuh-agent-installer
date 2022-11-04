@@ -1,14 +1,14 @@
 # !/bin/bash
+wazuh_username=$1
 wazuh_ip=$4
 error_sudo="Please run the installer with sudo"
-error_username="\nPlease add the username that will identify your machine: sudo ./install-agent -u <USER> -i <IP> "
-user_name=$1
+error_flags="\nSome data was not provided, please check for all the needed flags -u <USERNAME> & -i <IP>, the order of the flags is not interchangeable"
 
 if [ ! -z "$SUDO_USER" ]; then
     if [ "$1"  = "-u" ]; then
         if [ "$3" = "-i" ]; then
             if [ "$(sipcalc $4 | grep ERR)" != "" ]; then
-                echo "Provided IP is not valid"
+                echo "IP: $4 is not valid, please provide a valid IP"
                 exit 1
             else
                 # Install sipcalc package to be easier to check th IP
@@ -16,15 +16,15 @@ if [ ! -z "$SUDO_USER" ]; then
                 sudo apt install sipcalc curl -y
 
                 echo "Installing Wazuh Agent on IP: $4"
-                curl -so wazuh-agent-4.3.8.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.3.8-1.pkg && sudo launchctl setenv WAZUH_MANAGER "$wazuh_ip" WAZUH_AGENT_NAME "$user_name" WAZUH_REGISTRATION_PASSWORD 'password' && sudo installer -pkg ./wazuh-agent-4.3.8.pkg -target / && rm wazuh-agent-4.3.8.pkg
+                curl -so wazuh-agent-4.3.8.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.3.8-1.pkg && sudo launchctl setenv WAZUH_MANAGER "$wazuh_ip" WAZUH_AGENT_NAME "$wazuh_username" WAZUH_REGISTRATION_PASSWORD 'password' && sudo installer -pkg ./wazuh-agent-4.3.8.pkg -target / && rm wazuh-agent-4.3.8.pkg
 
                 sudo /Library/Ossec/bin/wazuh-control start
                 exit 1
             fi
         fi
-        echo "Some data was not provided, please check for -i <IP> & -u <USERNAME>"
+        echo ${error_flags}
     else
-        echo ${error_username}
+        echo ${error_flags}
     fi
 else
     echo ${error_sudo}
