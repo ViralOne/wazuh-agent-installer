@@ -2,7 +2,7 @@
 wazuh_username=$2
 wazuh_ip=$4
 error_sudo="Please run the installer with sudo"
-error_flags="\nSome data was not provided, please check for all the needed flags -u <USERNAME> & -i <IP>, the order of the flags is not interchangeable"
+error_flags="\nSome data was not provided, please check for all the needed flags: sudo ./install-agent -u <USERNAME> & -i <IP>, the order of the flags is not interchangeable"
 
 if [ ! -z "$SUDO_USER" ]; then
     if [ "$1"  = "-u" ]; then
