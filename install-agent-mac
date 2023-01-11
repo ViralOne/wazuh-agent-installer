@@ -16,7 +16,7 @@ if [ ! -z "$SUDO_USER" ]; then
                 sudo apt install sipcalc curl -y
 
                 echo "Installing Wazuh Agent on IP: $4"
-                curl -so wazuh-agent-4.3.8.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.3.8-1.pkg && sudo launchctl setenv WAZUH_MANAGER "$wazuh_ip" WAZUH_AGENT_NAME "$wazuh_username" WAZUH_REGISTRATION_PASSWORD 'password' && sudo installer -pkg ./wazuh-agent-4.3.8.pkg -target / && rm wazuh-agent-4.3.8.pkg
+                curl -so wazuh-agent-4.3.10.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.3.10-1.pkg && sudo launchctl setenv WAZUH_MANAGER "$wazuh_ip" WAZUH_AGENT_NAME "$wazuh_username" WAZUH_REGISTRATION_PASSWORD 'password' && sudo installer -pkg ./wazuh-agent-4.3.10.pkg -target / && rm wazuh-agent-4.3.10.pkg
 
                 sudo /Library/Ossec/bin/wazuh-control start
                 exit 1
